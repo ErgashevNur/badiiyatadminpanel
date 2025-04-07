@@ -89,7 +89,7 @@ function LoginPage() {
         <Button
           type="submit"
           disabled={isLoading}
-          className="mt-[39px] rounded-full bg-[#152540] max-w-[430px] w-full py-4 text-[18px] font-medium text-white disabled:opacity-50"
+          className="mt-[39px] rounded-full bg-[#152540] max-w-[430px] w-full py-6 text-[18px] font-medium text-white disabled:opacity-50"
         >
           {isLoading ? (
             <>
