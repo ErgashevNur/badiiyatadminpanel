@@ -15,14 +15,20 @@ function App() {
           <RootLayouts />
         </ProtectedRoutes>
       ),
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: "/authors",
+          element: <Mualliflar />,
+        },
+      ],
     },
     {
       path: "/login",
       element: <Login />,
-    },
-    {
-      path: "/authors",
-      element: <Mualliflar />,
     },
   ]);
 
