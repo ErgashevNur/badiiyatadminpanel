@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ProtectedRoutes } from "./layout/ProtectedRoutes";
 import RootLayouts from "./layout/RootLayouts";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
 import Mualliflar from "./pages/Mualliflar";
 import { Toaster } from "sonner";
 
@@ -15,14 +16,20 @@ function App() {
           <RootLayouts />
         </ProtectedRoutes>
       ),
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: "/authors",
+          element: <Mualliflar />,
+        },
+      ],
     },
     {
       path: "/login",
       element: <Login />,
-    },
-    {
-      path: "/authors",
-      element: <Mualliflar />,
     },
   ]);
 
