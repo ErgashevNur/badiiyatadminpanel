@@ -1,13 +1,19 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ProtectedRoutes } from "./layout/ProtectedRoutes";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import BookDetail from "./pages/BookDetails";
+import AuthorDetail from "./pages/AuthorDetails";
+import Mualliflar from "./pages/Mualliflar";
+import ProtectedRoutes from "./layout/ProtectedRoutes";
 import RootLayouts from "./layout/RootLayouts";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
-import Mualliflar from "./pages/Mualliflar";
-import { Toaster } from "sonner";
+import { useAppStore } from "./lib/zustand";
 
 function App() {
-  const admin = true;
+  const admin = useAppStore((state) => state.admin);
   const routes = createBrowserRouter([
     {
       path: "/",
@@ -25,20 +31,23 @@ function App() {
           path: "/authors",
           element: <Mualliflar />,
         },
+        {
+          path: "/book/:id",
+          element: <BookDetail />,
+        },
+        {
+          path: "/author/:id",
+          element: <AuthorDetail />,
+        },
       ],
     },
     {
       path: "/login",
-      element: <Login />,
+      element: admin ? <Navigate to={"/"} /> : <Login />,
     },
   ]);
 
-  return (
-    <>
-      <RouterProvider router={routes} />,
-      <Toaster position="top-right" richColors />
-    </>
-  );
+  return <RouterProvider router={routes} />;
 }
 
 export default App;

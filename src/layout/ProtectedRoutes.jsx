@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
 
-export function ProtectedRoutes({ admin, children }) {
+export default function ProtectedRoutes({ children, admin }) {
   if (admin) {
     return children;
   } else {
-    return <Navigate to={"/login"} />;
+    <Navigate to={"/login"} />;
   }
 }

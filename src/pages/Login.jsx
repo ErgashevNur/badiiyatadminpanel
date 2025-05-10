@@ -1,61 +1,46 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import signin from "/public/SignIn.svg";
 import { toast, Toaster } from "sonner";
+import { getFormData } from "../lib/utils";
+import { login } from "../request";
+import { useAppStore } from "../lib/zustand";
 
-function LoginPage() {
+function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const setAdmin = useAppStore((state) => state.setAdmin);
 
-  const handleSubmit = async (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
+
+    const result = getFormData(e.target);
     setIsLoading(true);
 
-    try {
-      const formData = new FormData(e.target);
-      const credentials = Object.fromEntries(formData);
+    login(result)
+      .then((res) => {
+        console.log(res);
 
-      const response = await fetch(
-        "https://library-project-6agw.onrender.com/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(credentials),
-        }
-      );
+        console.log(setAdmin);
+        setAdmin(res);
 
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
-
-      toast.success("Welcome");
-      const data = await response.json();
-      localStorage.setItem("token", data.token);
-      navigate("/");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+        toast.success("Xush kelibsiz!");
+      })
+      .catch(({ message }) => toast.error(message))
+      .finally(() => setIsLoading(false));
+  }
   return (
     <div className="flex h-screen items-center bg-white">
       <img
         src={signin}
-        className="w-[913px] bg-[#C9AC8CED] px-[50px] py-[100px]"
+        className="w-[50%] h-full bg-[#C9AC8CED] px-[50px] py-[101px]"
         alt="Sign In Illustration"
       />
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white px-[200px] pb-[140px] pt-[123px] text-black"
+        className="bg-white px-[100px] pb-[140px] pt-[123px] text-black"
       >
         <h2 className="mb-5 font-slab text-[40px] font-black">Sign in</h2>
 
@@ -93,17 +78,16 @@ function LoginPage() {
         >
           {isLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Please wait...
+              <RefreshCw className="animate-spin" /> Iltimos kuting...
             </>
           ) : (
-            "Next step"
+            "Keyingi qadam"
           )}
         </Button>
       </form>
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-center" richColors />
     </div>
   );
 }
 
-export default LoginPage;
+export default Login;

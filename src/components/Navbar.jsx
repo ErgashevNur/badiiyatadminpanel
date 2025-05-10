@@ -21,7 +21,7 @@ function Navbar({ className }) {
 
   return (
     <div
-      className={`${className} mt-[25px] flex items-center justify-between pb-[30px] border-b border-[#c9c9c9]`}
+      className={`${className} mt-[25px] flex items-center justify-between pb-[30px] border-b px-20 border-[#c9c9c9]`}
     >
       <h1 className="font-dancing ml-[81px] mr-96 text-[25px] uppercase text-[#C9AC8C]">
         <a href="/">badiiyat</a>
@@ -29,7 +29,7 @@ function Navbar({ className }) {
 
       <ul className="flex items-center gap-[35px] justify-center">
         {menus.map((menu, index) => (
-          <li className="hover:underline" key={index}>
+          <li className="hover:underline text-white" key={index}>
             <a href={menu.url}>{menu.txt}</a>
           </li>
         ))}
@@ -37,7 +37,7 @@ function Navbar({ className }) {
 
       <button
         onClick={handleLogout}
-        className="px-4 py-2 bg-gray-900 text-white rounded"
+        className="px-4 py-2 bg-gray-700 text-white rounded"
       >
         Logout
       </button>

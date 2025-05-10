@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
+import { useParams } from "react-router-dom";
+import { ArrowDown, Plus } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,30 +16,35 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
-function Authors() {
-  const [Authors, setAuthors] = useState([]);
+function AuthorDetails() {
+  const { id } = useParams();
+  const [Author, setAuthor] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+
+  function formatNumber(num) {
+    if (!num) return "0";
+    return num.toLocaleString("ru-RU").replace(/,/g, " ");
+  }
 
   useEffect(() => {
-    fetch("https://library-1dmu.onrender.com/get_authors")
+    fetch(`https://library-1dmu.onrender.com/get_one_author/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setAuthors(data);
+        setAuthor(data);
         setLoading(false);
       })
       .catch((error) => {
         console.error("API xatosi:", error);
         setLoading(false);
       });
-  }, []);
+  }, [id]);
+
+  console.log(Author);
 
   if (loading)
     return (
-      <div className="flex items-center h-screen">
+      <div className="flex h-screen items-center">
         <Button className="mx-auto flex items-center" disabled>
           <Loader2 className="animate-spin" />
           Malumotlar yuklanmoqda...
@@ -46,23 +53,26 @@ function Authors() {
     );
 
   return (
-    <div className="p-5">
-      <div className="flex justify-end">
+    <section
+      className="min-h-screen bg-[length:1000px_900px] bg-[position:600px_180px] bg-no-repeat text-white"
+      style={{ backgroundImage: "url('/bg.svg')" }}
+    >
+      <div className="flex justify-end pt-5 pr-20">
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="outline"
               className="  border-2 border-gray-300 shadow-lg shadow-gray-400/50 hover:bg-gray-100 dark:border-gray-600 dark:shadow-gray-800/50 dark:hover:bg-gray-800 p-3 px-4 mb-8"
             >
-              <Plus />
+              <Plus className="text-black" />
             </Button>
           </SheetTrigger>
           <SheetContent className="w-full max-w-2xl overflow-y-auto">
             <form>
               <SheetHeader className="mb-6">
-                <SheetTitle className="text-2xl">Add Author</SheetTitle>
+                <SheetTitle className="text-2xl">Edit Author</SheetTitle>
                 <SheetDescription>
-                  Muallif qo'shish uchun ma'lumotlarni to'ldiring
+                  Authorni ma'lumotlarni o'zgartirish
                 </SheetDescription>
               </SheetHeader>
 
@@ -154,30 +164,52 @@ function Authors() {
         </Sheet>
       </div>
 
-      <ul className="mx-auto grid grid-cols-6 space-y-2">
-        {Authors.map((author) => (
-          <li
-            key={author._id}
-            className="rounded-lg p-4 shadow-md"
-            onClick={() => navigate(`/author/${author._id}`)}
-          >
-            <img
-              src={author.img}
-              alt={author.full_name}
-              className="h-60 w-full rounded-lg object-cover"
-            />
-            <h3 className="font-dancing text-center text-[20px] font-normal uppercase">
-              {author.full_name}
-            </h3>
-            <p className="text-center text-[12px] font-light capitalize text-gray-600">
-              {new Date(author.dateOfBirth).getFullYear()} -{" "}
-              {new Date(author.dateOfDeath).getFullYear()}
+      <div className="mx-[81px] mt-10 flex gap-10">
+        <img
+          src={Author?.img}
+          alt={Author?.full_name}
+          className="h-[500px] w-[350px] rounded-xl object-cover shadow-md"
+        />
+
+        <div className="flex flex-col">
+          <h3 className="font-dancing text-4xl text-[#e8c282]">
+            {Author.full_name}
+          </h3>
+          <p className="text-lg capitalize text-[#e8c282]">{Author.country}</p>
+          {/* <div className="flex gap-2 flex-col">
+            <p className="text-sm text-gray-400">
+              Sahifalar soni: {Author.pages}
             </p>
-          </li>
-        ))}
-      </ul>
-    </div>
+            <p className="text-sm text-gray-400">
+              Chop etilgan yili: {Author.year}
+            </p>
+            <p className="text-sm text-gray-400">Shahar {Author.country}</p>
+          </div>
+
+          <div className="mt-4 flex items-center gap-2">
+            <p className="text-md flex items-center gap-1 text-gray-400">
+              To'liq ma'lumot <ArrowDown className="h-4 w-4" />
+            </p>
+            <div className="flex-grow border-t border-gray-600"></div>
+          </div> */}
+
+          <p className="text-sm leading-relaxed text-gray-300">{Author?.bio}</p>
+
+          <div>
+            <p>Mavjud farmat</p>
+
+            {/* <div>
+              <Author />
+              <p>Qog'oz kitob</p>
+              <p className="text-[14px] font-semibold text-[#C9AC8C]">
+                {formatNumber(Number(Author?.price))} so'm
+              </p>
+            </div> */}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
-export default Authors;
+export default AuthorDetails;
